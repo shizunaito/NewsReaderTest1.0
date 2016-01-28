@@ -14,6 +14,7 @@ class Yahoo: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var newsDataArray = NSArray()
     var yahooUrl = ""
     var linktitle = ""
+    var refreshControl:UIRefreshControl!
     
     @IBOutlet var table :UITableView!
 
@@ -34,8 +35,29 @@ class Yahoo: UIViewController, UITableViewDataSource, UITableViewDelegate {
                 self.table.reloadData()
             }
         }
+        
+        self.refreshControl = UIRefreshControl()
+        self.refreshControl.attributedTitle = NSAttributedString(string: "refresh...")
+        self.refreshControl.addTarget(self, action: "refresh:", forControlEvents:.ValueChanged)
+        self.table.addSubview(self.refreshControl)
 
         // Do any additional setup after loading the view.
+    }
+    
+    func refresh(refreshControl: UIRefreshControl)
+    {
+        let requestUrl = "https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&q=http://news.yahoo.co.jp/pickup/rss.xml&num=8"
+        
+        Alamofire.request(.GET,requestUrl).responseJSON { response in
+            if let jsonDic = response.result.value as? NSDictionary {
+                let responseData = jsonDic["responseData"] as! NSDictionary
+                let feed = responseData["feed"] as! NSDictionary
+                self.newsDataArray = feed["entries"] as! NSArray
+            }
+            // 更新するコード(webView.reload()など)
+            self.refreshControl.endRefreshing()
+            self.table.reloadData()
+        }
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection: Int) -> Int {

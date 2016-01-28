@@ -11,7 +11,10 @@ import TwitterKit
 
 class TwitterLoginViewController: UIViewController {
 
+    var LoginCheck = 0
+    
     override func viewDidLoad() {
+         LoginCheck = 0
 
         // Do any additional setup after loading the view.
     }
@@ -20,17 +23,22 @@ class TwitterLoginViewController: UIViewController {
         
         Twitter.sharedInstance().logInWithCompletion {
             (session, error) -> Void in
-            if (session != nil) {
+            if session != nil {
                 print("signed in user name \(session!.userName)")
-                self.performSegueWithIdentifier("showMain2", sender: self)
+                self.LoginCheck = 1
             } else {
                 print("Error：\(error!.localizedDescription)")
-    }
+            }
         }
-}
+    }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        if  LoginCheck == 1 {self.performSegueWithIdentifier("showMain2", sender: self)}
     }
     
 

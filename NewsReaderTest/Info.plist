@@ -75,6 +75,8 @@
 				<true/>
 				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
 				<true/>
+                <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
 			</dict>
 			<key>facebook.com</key>
 			<dict>
@@ -82,6 +84,8 @@
 				<true/>
 				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
 				<true/>
+                <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
 			</dict>
 			<key>fbcdn.net</key>
 			<dict>
@@ -89,6 +93,8 @@
 				<true/>
 				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
 				<true/>
+                <key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+                <true/>
 			</dict>
 		</dict>
 	</dict>

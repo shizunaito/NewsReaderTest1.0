@@ -41,7 +41,7 @@ class GoogleViewController: UIViewController, UIWebViewDelegate {
     }
     
     @IBAction func twitter(sender: AnyObject) {
-        if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
+//        if SLComposeViewController.isAvailableForServiceType(SLServiceTypeTwitter) {
             let controller = SLComposeViewController(forServiceType: SLServiceTypeTwitter)
             
             let url = NSURL(string: newsUrl)!
@@ -49,8 +49,8 @@ class GoogleViewController: UIViewController, UIWebViewDelegate {
             controller.setInitialText(linktitle)
             
             presentViewController(controller, animated: true, completion: {})
-        }
-        else {print("Twitter Error")}
+//        }
+//        else {print("Twitter Error")}
     }
 
     @IBAction func Facebook(sender: AnyObject) {
@@ -63,6 +63,7 @@ class GoogleViewController: UIViewController, UIWebViewDelegate {
             
             presentViewController(controller, animated: true, completion: {})
         }
+        else {print("Facebook Error")}
     }
     
     override func didReceiveMemoryWarning() {

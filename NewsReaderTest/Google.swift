@@ -14,6 +14,7 @@ class Google: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var newsDataArray = NSArray()
     var GoogleUrl = ""
     var linktitle = ""
+    var refreshControl:UIRefreshControl!
 
     @IBOutlet var table1 :UITableView!
     
@@ -22,21 +23,43 @@ class Google: UIViewController, UITableViewDataSource, UITableViewDelegate {
         
         table1.dataSource = self
         table1.delegate = self
-        
         let requestUrl = "http://ajax.googleapis.com/ajax/services/search/news?v=1.0&topic=p&hl=ja&rsz=8"
         
         Alamofire.request(.GET,requestUrl).responseJSON { response in
             if let jsonDic = response.result.value as? NSDictionary {
                 let responseData = jsonDic["responseData"] as! NSDictionary
                 self.newsDataArray = responseData["results"] as! NSArray
-                self.table1.reloadData()
+                 self.table1.reloadData()
             }
         }
 
-        
+        self.refreshControl = UIRefreshControl()
+        self.refreshControl.attributedTitle = NSAttributedString(string: "refresh...")
+        self.refreshControl.addTarget(self, action: "refresh:", forControlEvents:.ValueChanged)
+        self.refreshControl.center.y = self.view.center.y
+        self.table1.addSubview(self.refreshControl)
 
-        // Do any additional setup after loading the view.
+         
     }
+    
+        func refresh(refreshControl: UIRefreshControl)
+    {
+        let requestUrl = "http://ajax.googleapis.com/ajax/services/search/news?v=1.0&topic=p&hl=ja&rsz=8"
+        
+        Alamofire.request(.GET,requestUrl).responseJSON { response in
+            if let jsonDic = response.result.value as? NSDictionary {
+                let responseData = jsonDic["responseData"] as! NSDictionary
+                self.newsDataArray = responseData["results"] as! NSArray
+               
+            }
+        // 更新するコード(webView.reload()など)
+        self.refreshControl.endRefreshing()
+        self.table1.reloadData()
+        }
+    
+    }
+    
+   
     
     func tableView(tableView: UITableView, numberOfRowsInSection: Int) -> Int {
         return newsDataArray.count
@@ -78,6 +101,7 @@ class Google: UIViewController, UITableViewDataSource, UITableViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
+
 
     /*
     // MARK: - Navigation

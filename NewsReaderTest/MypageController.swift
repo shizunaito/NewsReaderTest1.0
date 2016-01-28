@@ -12,55 +12,89 @@ import FBSDKLoginKit
 
 class MypageController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    @IBOutlet weak var usrImage: UIImageView!
-
     var userProfile : NSDictionary!
-    
 
     @IBOutlet weak var MypageTable: UITableView!
+    @IBOutlet weak var usrImage: UIImageView!
     
     let titles = ["名前", "性別", "メール"]
-//    let tests = ["...","...","..."]
-
-    var user: [String] = []
-    //NSUserDefaultsのインスタンスを生成
+    var details = ["...","...","..."]
+    
     let defaults = NSUserDefaults.standardUserDefaults()
-
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         MypageTable.dataSource = self
         MypageTable.delegate = self
+        defaults.synchronize()
+        if((defaults.objectForKey("Name")) != nil){
+            
+            let profileImageURL = defaults.objectForKey("Url") as! String
+            let profileImage = UIImage(data: NSData(contentsOfURL: NSURL(string: profileImageURL)!)!)
+        
+            self.usrImage.clipsToBounds = true
+            self.usrImage.layer.cornerRadius = 60
+            self.usrImage.image = profileImage!
+
+            details[0] = defaults.objectForKey("Name") as! String
+            details[1] = defaults.objectForKey("Gender") as! String
+            details[2] = defaults.objectForKey("Email") as! String
+            defaults.synchronize()
+        }
+        else {print("nil")}
 
         // Do any additional setup after loading the view.
     }
+    
+    
+    
     
     func tableView(tableView: UITableView, numberOfRowsInSection: Int) -> Int {
         return titles.count
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        //前回の保存内容があるかどうかを判定
-        if((defaults.objectForKey("USER")) != nil){
-            
-            //objectsを配列として確定させ、前回の保存内容を格納
-//            let objects = defaults.objectForKey("USER") as! NSArray
-            
-        }
-
         let cell = UITableViewCell(style: UITableViewCellStyle.Value1, reuseIdentifier: "cell")
         cell.textLabel?.text = titles[indexPath.row]
-//        cell.detailTextLabel?.text = objects[indexPath.row]
-        
+        cell.detailTextLabel?.text = details[indexPath.row]
                 
         return cell
     }
 
     
     @IBAction func logout(sender: AnyObject) {
-        let loginManager : FBSDKLoginManager = FBSDKLoginManager()
-        loginManager.logOut()
-        self.dismissViewControllerAnimated(true, completion: nil)
+        let alert:UIAlertController = UIAlertController(title:"ログアウトしますか",
+            message: "",
+            preferredStyle: UIAlertControllerStyle.Alert)
+        
+        let cancelAction:UIAlertAction = UIAlertAction(title: "いいえ",
+            style: UIAlertActionStyle.Cancel,
+            handler:{
+                (action:UIAlertAction!) -> Void in
+                print("Cancel")
+        })
+        
+        let defaultAction:UIAlertAction = UIAlertAction(title: "はい",
+            style: UIAlertActionStyle.Default,
+            handler:{
+                (action:UIAlertAction!) -> Void in
+                
+                let loginManager : FBSDKLoginManager = FBSDKLoginManager()
+                loginManager.logOut()
+                self.defaults.removeObjectForKey("Name")
+                self.defaults.removeObjectForKey("Gender")
+                self.defaults.removeObjectForKey("Email")
+                self.defaults.removeObjectForKey("Url")
+                self.dismissViewControllerAnimated(true, completion: nil)
+                
+        })
+
+         alert.addAction(cancelAction)
+         alert.addAction(defaultAction)
+        
+        presentViewController(alert, animated: true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {

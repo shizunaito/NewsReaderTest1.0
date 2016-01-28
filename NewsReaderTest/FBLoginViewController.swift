@@ -57,19 +57,21 @@ class FBLoginViewController: UIViewController{
                             // プロフィール情報をディクショナリに入れる
                             self.userProfile = result as! NSDictionary
                             print(self.userProfile!)
-//                            let usrName = self.userProfile.objectForKey("name") as? String
-//                            let usrGender = self.userProfile.objectForKey("gender") as? String
-//                            let usrEmail = self.userProfile.objectForKey("email") as? String
-//                            //let user:[String] = [usrName!, usrGender!, usrEmail!]
-//                            //NSUserDefaultsのインスタンスを生成
-//                            let defaults = NSUserDefaults.standardUserDefaults()
                             
-                            //保存
-                            //defaults.setObject(user, forKey:"USER")
+                            let profileImageURL : String = self.userProfile.objectForKey("picture")?.objectForKey("data")?.objectForKey("url") as! String
+
+                            // インスタンス生成
+                            let defaults = NSUserDefaults.standardUserDefaults()
                             
-                            // シンクロ
-                            //defaults.synchronize()
+                            // キーに値をそれぞれ保存
+                            defaults.setObject(self.userProfile.objectForKey("name"), forKey:"Name")
+                            defaults.setObject(self.userProfile.objectForKey("email"), forKey:"Email")
+                            defaults.setObject(self.userProfile.objectForKey("gender"), forKey:"Gender")
+                            defaults.setObject(profileImageURL, forKey: "Url")
+                            defaults.synchronize()
                             
+                            let test = defaults.stringForKey("Name")
+                            print(test)
                             
                         }
                     })
